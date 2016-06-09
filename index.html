@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>ed-location</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
+<style>
+  body { margin:0; padding:0; }
+  #map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  .leaflet-control-mapbox-geocoder {
+    display: none;
+  }
+  .leaflet-control-mapbox-geocoder,
+  .ed-address-control {
+    position: absolute;
+    top: 0;
+    left: 40px;
+  }
+  .ed-address-control {
+    border: 1px solid #999;
+    background-color: white;
+    min-width: 10rem;
+    min-height: 1.5rem;
+    padding: 0 0.25rem;
+  }
+</style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoiZm9ycmVzdG8iLCJhIjoiY2lwOGtmN2s0MDE4dXRqbm91eWIzbzhqZiJ9.ythDls7OnKQKEPL6iq5p8Q'
+
+var geocoderControl = L.mapbox.geocoderControl('mapbox.places'
+  , { autocomplete: true
+    , keepOpen: true
+    }
+  )
+  .on('select', function (event) {
+    var lat = event.feature.center[1] // wat
+    var lng = event.feature.center[0]
+    marker.setLatLng(new L.latLng(lat, lng))
+    if (event.feature.place_name) {
+      var addressEl = addressControl.getContainer()
+      addressEl.style.display = 'block'
+      addressEl.querySelector('.ed-address-control-text').textContent = event.feature.place_name
+      var geocoderEl = geocoderControl.getContainer()
+      geocoderEl.style.display = 'none'
+      locationToEd(event.feature.place_name)
+    }
+  })
+
+var EdAddress = L.Control.extend(
+  { options:
+    { position: 'topleft' }
+  , onAdd:
+    function (map) {
+      var container = L.DomUtil.create('div', 'ed-address-control')
+      var icon = L.DomUtil.create('div', 'mapbox-icon mapbox-icon-geocoder', container)
+      var text = L.DomUtil.create('span', 'ed-address-control-text', container)
+      text.textContent = ' '
+      container.addEventListener('click', function (event) {
+        container.style.display = 'none'
+        var geocoderEl = geocoderControl.getContainer()
+        geocoderEl.style.display = 'block'
+        geocoderEl.querySelector('input').focus()
+      })
+      return container
+    }
+  }
+)
+var addressControl = new EdAddress()
+
+var map = L.mapbox
+  .map('map', 'mapbox.streets')
+  .addControl(addressControl)
+  .addControl(geocoderControl)
+  .addEventListener('zoomend', function (event) {
+    locationToEd()
+  })
+
+var marker = L.marker([0, 0]
+  , { icon: L.mapbox.marker.icon({'marker-color': 'ff8888'})
+    , draggable: true
+    }
+  )
+  .addEventListener('dragend', function (event) {
+    locationToEd()
+  })
+  .addTo(map)
+
+function locationToEd (name) {
+  var loc = marker.getLatLng()
+  var zoom = map.getZoom()
+  console.log(loc, zoom, name)
+}
+
+function edToLocation (block) {
+
+}
+
+</script>
+</body>
+</html>
