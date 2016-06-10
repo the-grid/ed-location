@@ -87,6 +87,8 @@ var marker = L.marker([20, -35]
     }
   )
   .addEventListener('dragend', function (event) {
+    var loc = marker.getLatLng()
+    map.setView(loc)
     locationToEd()
   })
   .addTo(map)
