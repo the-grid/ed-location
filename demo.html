@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>demo ed-location</title>
+</head>
+<body>
+  <h2>demo ed-location</h2>
+  <h2>Editor</h2>
+  <iframe id="demo" src="./index.html" width="480" height="360"></iframe>
+  <h2>Block</h2>
+  <pre id="block"></pre>
+
+  <script>
+    var iframe = document.getElementById('demo')
+    // Sending content to the editor
+    iframe.addEventListener('load', function () {
+      iframe.contentWindow.postMessage(
+        { topic: 'setblock'
+        , payload:
+          { metadata:
+            { geo: {latitude: 68.55260186877743, longitude: 22.666168212890625, zoom: 5}
+            , address: 'Enontekiö, Lappi, Finland'
+            }
+          , id: 'uuid-loca-tion'
+          , html: ''
+          , type: 'location'
+          }
+        }
+      , '*'
+      )
+    })
+    // Receiving content from the editor
+    window.addEventListener('message', function (message) {
+      var iframe = document.getElementById('demo')
+      var preview = document.getElementById('preview')
+      var block = document.getElementById('block')
+
+      switch (message.data.topic) {
+        case 'changed':
+          block.textContent = JSON.stringify(message.data.payload, null, 2)
+          break
+        case 'height':
+          iframe.height = message.data.payload
+        default:
+          break
+      }
+    })
+  </script>
+</body>
+</html>
