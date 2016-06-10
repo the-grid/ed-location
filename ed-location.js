@@ -39,8 +39,12 @@ var addressControl = new EdAddress()
 
 function setAddressText (address) {
   var addressEl = addressControl.getContainer()
-  if (!addressEl) return
   addressEl.querySelector('.ed-address-control-text').textContent = address
+}
+
+function setInputValue (text) {
+  var geocoderEl = geocoderControl.getContainer()
+  geocoderEl.querySelector('input').value = text
 }
 
 var addressVisible = true
@@ -117,6 +121,7 @@ function edToLocation () {
   marker.setLatLng(loc)
   if (block.metadata.address) {
     setAddressText(block.metadata.address)
+    setInputValue(block.metadata.address)
   }
 }
 
