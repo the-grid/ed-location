@@ -57,7 +57,9 @@ function focus () {
     toggleAddress()
   }
   var geocoderEl = geocoderControl.getContainer()  
-  geocoderEl.querySelector('input').select()
+  var inputEl = geocoderEl.querySelector('input')
+  inputEl.focus()
+  inputEl.select()
 }
 
 var map = L.mapbox

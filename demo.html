@@ -10,6 +10,7 @@
   <iframe id="demo" src="./index.html" width="480" height="360"></iframe>
   <h2>Block</h2>
   <pre id="block"></pre>
+  <button id="focus">focus</button>
 
   <script>
     var iframe = document.getElementById('demo')
@@ -46,6 +47,11 @@
           break
       }
     })
+
+    // Focus demo
+    document.getElementById('focus').onclick = function () {
+      iframe.contentWindow.postMessage({topic: 'focus'}, '*')
+    }
   </script>
 </body>
 </html>
