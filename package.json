@@ -1,0 +1,24 @@
+{
+  "name": "@the-grid/ed-location",
+  "version": "1.0.0",
+  "description": "Ed widget for address geocoding and map location editing",
+  "main": "ed-location.js",
+  "scripts": {
+    "test": "echo 'todo'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/the-grid/ed-location.git"
+  },
+  "keywords": [
+    "ed",
+    "location",
+    "map"
+  ],
+  "author": "Forrest O.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/the-grid/ed-location/issues"
+  },
+  "homepage": "https://github.com/the-grid/ed-location#readme"
+}
