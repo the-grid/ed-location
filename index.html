@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset=utf-8 />
-  <title>ed-location</title>
+  <title>Location Viewer</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
   <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
   <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
@@ -14,27 +14,54 @@
       bottom: 0;
       width: 100%;
     }
-    .leaflet-control-mapbox-geocoder {
-      display: none;
-    }
-    .leaflet-control-mapbox-geocoder,
-    .ed-address-control {
-      position: absolute;
-      top: 0;
-      left: 40px;
-    }
-    .ed-address-control {
-      border: 1px solid #999;
-      background-color: white;
-      min-width: 10rem;
-      max-width: 80rem;
-      min-height: 1.5rem;
-      padding: 0 0.25rem;
-    }
   </style>
 </head>
 <body>
-  <div id='map'></div>
-  <script src='./ed-location.js'></script>
+  <div id='map'>Loading map...</div>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var query = {}
+    var search = window.location.search.substring(1);
+    var vars = search.split("&")
+    for (var i=0, len = vars.length; i<len; i++) {
+      var pair = vars[i].split("=")
+      query[pair[0]] = window.decodeURIComponent(pair[1])
+    }
+
+    if (query.latitude == null || query.longitude == null) {
+      document.getElementById('map').textContent = 'Map query not found.'
+      return
+    }
+    var center = {lat: query.latitude, lon: query.longitude}
+    var zoom = query.zoom || 10
+
+    L.mapbox.accessToken = 'pk.eyJ1IjoiZm9ycmVzdG8iLCJhIjoiY2lwOGtmN2s0MDE4dXRqbm91eWIzbzhqZiJ9.ythDls7OnKQKEPL6iq5p8Q'
+
+    var map = L.mapbox
+      .map('map'
+      , 'mapbox.streets'
+      , { center: center
+        , zoom: zoom
+        , scrollWheelZoom: false
+        , doubleClickZoom: false
+        }
+      )
+      .on('dblclick', function () {
+        map.setView(center, zoom)
+      })
+
+    // map.scrollWheelZoom.disable()
+
+    var marker = L.marker(center
+      , { icon: L.mapbox.marker.icon({'marker-color': 'ff8888'})
+        , draggable: false
+        , title: query.address || ''
+        }
+      )
+      .addTo(map)
+
+  })
+  </script>
 </body>
 </html>

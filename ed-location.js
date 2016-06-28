@@ -71,6 +71,7 @@ var map = L.mapbox
   , 'mapbox.streets'
   , { center: [20, -35]
     , zoom: 2
+    , scrollWheelZoom: false
     }
   )
   .addControl(addressControl)
@@ -78,8 +79,6 @@ var map = L.mapbox
   .addEventListener('zoomend', function (event) {
     locationToEd()
   })
-  
-map.scrollWheelZoom.disable()
 
 var marker = L.marker([20, -35]
   , { icon: L.mapbox.marker.icon({'marker-color': 'ff8888'})
@@ -109,6 +108,15 @@ function locationToEd (place_name) {
   if (place_name) {
     block.metadata.address = place_name
   }
+  var url = 'https://the-grid.github.io/ed-location/'
+    + '?latitude=' + encodeURIComponent(block.metadata.geo.latitude)
+    + '&longitude=' + encodeURIComponent(block.metadata.geo.longitude)
+    + '&zoom=' + encodeURIComponent(block.metadata.geo.zoom)
+  if (block.metadata.address) {
+    url += '&address=' + encodeURIComponent(block.metadata.address)
+  }
+  block.metadata.isBasedOnUrl = url
+  block.html = '<iframe src="' + url + '"></iframe>'
   send('changed', block)
 }
 

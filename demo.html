@@ -5,11 +5,13 @@
   <title>demo ed-location</title>
 </head>
 <body>
-  <h2>demo ed-location</h2>
-  <h2>Editor</h2>
-  <iframe id="demo" src="./index.html" width="480" height="360"></iframe>
+  <h1>demo ed-location</h1>
+  <h2>Edit (edit.html)</h2>
+  <iframe id="demo" src="./edit.html" width="480" height="360"></iframe>
+  <h2>View (index.html)</h2>
+  <iframe id="view" src="./index.html" width="480" height="360"></iframe>
   <h2>Block</h2>
-  <pre id="block"></pre>
+  <pre id="blocktext"></pre>
   <button id="focus">focus</button>
 
   <script>
@@ -34,12 +36,18 @@
     // Receiving content from the editor
     window.addEventListener('message', function (message) {
       var iframe = document.getElementById('demo')
+      var view = document.getElementById('view')
       var preview = document.getElementById('preview')
-      var block = document.getElementById('block')
+      var blocktext = document.getElementById('blocktext')
 
       switch (message.data.topic) {
         case 'changed':
-          block.textContent = JSON.stringify(message.data.payload, null, 2)
+          var block = message.data.payload
+          if (block && block.metadata && block.metadata.isBasedOnUrl) {
+            var search = block.metadata.isBasedOnUrl.split('?')[1]
+            view.src = './index.html?' + search
+          }
+          blocktext.textContent = JSON.stringify(message.data.payload, null, 2)
           break
         case 'height':
           iframe.height = message.data.payload
