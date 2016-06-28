@@ -1,6 +1,6 @@
 {
   "name": "@the-grid/ed-location",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Ed widget for address geocoding and map location editing",
   "main": "ed-location.js",
   "scripts": {
