@@ -8,31 +8,36 @@
   <h1>demo ed-location</h1>
   <h2>Edit (edit.html)</h2>
   <iframe id="demo" src="./edit.html" width="480" height="360"></iframe>
+  <button id="send">send</button>
+  <button id="focus">focus</button>
   <h2>View (index.html)</h2>
   <iframe id="view" src="./index.html" width="480" height="360"></iframe>
   <h2>Block</h2>
   <pre id="blocktext"></pre>
-  <button id="focus">focus</button>
 
   <script>
     var iframe = document.getElementById('demo')
-    // Sending content to the editor
-    iframe.addEventListener('load', function () {
+    var block =
+      { metadata:
+        { geo: {latitude: 68.55260186877743, longitude: 22.666168212890625, zoom: 5}
+        , address: 'Enontekiö, Lappi, Finland'
+        }
+      , id: 'uuid-loca-tion'
+      , html: ''
+      , type: 'location'
+      }
+    function setBlock (block) {
       iframe.contentWindow.postMessage(
         { topic: 'setblock'
-        , payload:
-          { metadata:
-            { geo: {latitude: 68.55260186877743, longitude: 22.666168212890625, zoom: 5}
-            , address: 'Enontekiö, Lappi, Finland'
-            }
-          , id: 'uuid-loca-tion'
-          , html: ''
-          , type: 'location'
-          }
+        , payload: block
         }
       , '*'
       )
-    })
+    }
+    // Sending content to the editor
+    // iframe.addEventListener('load', function () {
+    //   setBlock(block)
+    // })
     // Receiving content from the editor
     window.addEventListener('message', function (message) {
       var iframe = document.getElementById('demo')
@@ -42,7 +47,7 @@
 
       switch (message.data.topic) {
         case 'changed':
-          var block = message.data.payload
+          block = message.data.payload
           if (block && block.metadata && block.metadata.isBasedOnUrl) {
             var search = block.metadata.isBasedOnUrl.split('?')[1]
             view.src = './index.html?' + search
@@ -59,6 +64,11 @@
     // Focus demo
     document.getElementById('focus').onclick = function () {
       iframe.contentWindow.postMessage({topic: 'focus'}, '*')
+    }
+
+    // Send demo
+    document.getElementById('send').onclick = function () {
+      setBlock(block)
     }
   </script>
 </body>
