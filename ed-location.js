@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+var DEFAULT_LAT = 20
+var DEFAULT_LON = -35
+
 L.mapbox.accessToken = 'pk.eyJ1IjoiZm9ycmVzdG8iLCJhIjoiY2lwOGtmN2s0MDE4dXRqbm91eWIzbzhqZiJ9.ythDls7OnKQKEPL6iq5p8Q'
 
 var geocoderControl = L.mapbox.geocoderControl('mapbox.places'
@@ -69,7 +72,7 @@ function focus () {
 var map = L.mapbox
   .map('map'
   , 'mapbox.streets'
-  , { center: [20, -35]
+  , { center: [DEFAULT_LAT, DEFAULT_LON]
     , zoom: 2
     , scrollWheelZoom: false
     }
@@ -77,10 +80,16 @@ var map = L.mapbox
   .addControl(addressControl)
   .addControl(geocoderControl)
   .addEventListener('zoomend', function (event) {
+    // This is triggered by edToLocation zoom changes,
+    // so we have to avoid sending default lat / lon
+    var loc = marker.getLatLng()
+    if (loc.lat === DEFAULT_LAT && loc.lng === DEFAULT_LON) {
+      return
+    }
     locationToEd()
   })
 
-var marker = L.marker([20, -35]
+var marker = L.marker([DEFAULT_LAT, DEFAULT_LON]
   , { icon: L.mapbox.marker.icon({'marker-color': 'ff8888'})
     , draggable: true
     }
